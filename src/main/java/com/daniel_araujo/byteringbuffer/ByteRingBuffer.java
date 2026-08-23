@@ -239,37 +239,22 @@ public final class ByteRingBuffer {
 
         if (size == 0) {
             return 0;
-        } else {
-            int toRead = Math.min(length, size);
-            int offset = nextOffset();
-            int firstHalfStart = start;
-            int firstHalfSize = buffer.length - start;
-            if (firstHalfSize > size) {
-                firstHalfSize = size;
-            }
-
-            if (firstHalfSize >= toRead) {
-                firstHalfSize = toRead;
-            }
-
-            System.arraycopy(buffer, firstHalfStart, bytes, index, firstHalfSize);
-            int toIndex = index + firstHalfSize;
-            toRead -= firstHalfSize;
-            if (toRead == 0) {
-                return firstHalfSize;
-            } else {
-                int secondHalfStart = offset <= start ? 0 : size;
-                int secondHalfSize = buffer.length - firstHalfSize;
-                if (secondHalfSize >= toRead) {
-                    secondHalfSize = toRead;
-                }
-
-                System.arraycopy(buffer, secondHalfStart, bytes, index + firstHalfSize, secondHalfSize);
-                int var10000 = toIndex + secondHalfSize;
-                toRead -= secondHalfSize;
-                return length - toRead;
-            }
         }
+
+        int toRead = Math.min(length, size);
+
+        int firstHalfSize = Math.min(buffer.length - start, size);
+        firstHalfSize = Math.min(firstHalfSize, toRead);
+
+        System.arraycopy(buffer, start, bytes, index, firstHalfSize);
+
+        int remaining = toRead - firstHalfSize;
+        if (remaining > 0) {
+            // The rest of the elements are wrapped around to the beginning of the array.
+            System.arraycopy(buffer, 0, bytes, index + firstHalfSize, remaining);
+        }
+
+        return toRead;
     }
 
     /**

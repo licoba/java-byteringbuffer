@@ -233,4 +233,21 @@ public final class ByteRingBufferPeekTest {
         assertArrayEquals(new byte[] { 1, 2 }, buffer.peek(2));
         assertArrayEquals(new byte[] { 1 }, buffer.peek(1));
     }
+
+    @Test
+    public final void array_returnValueMatchesActualCopiedCountWhenWrappedAndOverLength() {
+        ByteRingBuffer buffer = new ByteRingBuffer(10);
+
+        buffer.push(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        buffer.drop(5);
+        buffer.push(new byte[] { 11, 12 });
+
+        assertEquals(7, buffer.sizeUsed());
+
+        byte[] dest = new byte[100];
+        assertEquals(7, buffer.peek(dest, 0, 100));
+        assertArrayEquals(new byte[] { 6, 7, 8, 9, 10, 11, 12 },
+                java.util.Arrays.copyOfRange(dest, 0, 7));
+        assertEquals(0, dest[7]);
+    }
 }
