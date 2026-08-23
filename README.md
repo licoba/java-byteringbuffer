@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.daniel-araujo.byteringbuffer:byteringbuffer:2.0.0'
+    implementation 'com.daniel-araujo.byteringbuffer:byteringbuffer:2.0.1'
 }
 ```
 
@@ -24,7 +24,7 @@ Maven
 <dependency>
     <groupId>com.daniel-araujo.byteringbuffer</groupId>
     <artifactId>byteringbuffer</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
