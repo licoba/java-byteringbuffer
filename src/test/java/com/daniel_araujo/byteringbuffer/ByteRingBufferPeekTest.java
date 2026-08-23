@@ -32,6 +32,20 @@ public final class ByteRingBufferPeekTest {
     }
 
     @Test
+    public final void bytebuffer_supportsDirectByteBuffer() {
+        ByteRingBuffer buffer = new ByteRingBuffer(5);
+
+        buffer.push(new byte[] { 1, 2, 3 });
+        assertEquals(3, buffer.sizeUsed());
+        ByteBuffer result = ByteBuffer.allocateDirect(3);
+        assertEquals(3, buffer.peek(result));
+        assertEquals(0, result.position());
+        byte[] bytes = new byte[3];
+        result.get(bytes);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, bytes);
+    }
+
+    @Test
     public final void noargs_withoutPartition_readEntireBuffer() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 

@@ -296,9 +296,28 @@ public final class ByteRingBuffer {
      * @return Number of elements placed into the given ByteBuffer object.
      */
     public final int peek(ByteBuffer byteBuffer, int length) {
-        byte[] array = byteBuffer.array();
-        int index = byteBuffer.arrayOffset() + byteBuffer.position();
-        return peek(array, index, length);
+        final ByteBuffer dst = byteBuffer.duplicate();
+        int available = Math.min(length, dst.remaining());
+        dst.limit(dst.position() + available);
+
+        final int[] copied = new int[1];
+
+        peek(new PeekCallback() {
+            @Override
+            public void borrow(ByteBuffer chunk) {
+                if (!dst.hasRemaining() || !chunk.hasRemaining()) {
+                    return;
+                }
+
+                ByteBuffer slice = chunk.duplicate();
+                int n = Math.min(dst.remaining(), slice.remaining());
+                slice.limit(slice.position() + n);
+                dst.put(slice);
+                copied[0] += n;
+            }
+        });
+
+        return copied[0];
     }
 
     /**
