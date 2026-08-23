@@ -132,6 +132,20 @@ public class ByteRingBufferPushTest {
     }
 
     @Test
+    public final void pushingAfterWrappingAroundDoesNotThrow() {
+        ByteRingBuffer buffer = new ByteRingBuffer(10);
+
+        buffer.push(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        buffer.drop(5);
+
+        assertEquals(5, buffer.sizeFree());
+        assertEquals(3, buffer.push(new byte[] { 11, 12, 13 }));
+        assertEquals(8, buffer.sizeUsed());
+
+        assertArrayEquals(new byte[] { 6, 7, 8, 9, 10, 11, 12, 13 }, buffer.peek(8));
+    }
+
+    @Test
     public final void varargsSupport() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 

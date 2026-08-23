@@ -471,7 +471,7 @@ public final class ByteRingBuffer {
         if (start >= offset) {
             if (size > 0) {
                 // The beginning of the ring buffer is in front of us.
-                return offset - start;
+                return start - offset;
             } else {
                 return buffer.length - offset;
             }
