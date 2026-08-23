@@ -26,9 +26,13 @@ public final class ByteRingBuffer {
      * Creates a ring buffer that can store up to the given number of bytes.
      *
      * @param capacity
-     *            How many bytes can be stored in the buffer.
+     *            How many bytes can be stored in the buffer. Must be greater than zero.
      */
     public ByteRingBuffer(int capacity) {
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("capacity must be greater than zero");
+        }
+
         buffer = new byte[capacity];
     }
 
